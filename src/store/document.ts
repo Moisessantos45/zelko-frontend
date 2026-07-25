@@ -257,7 +257,7 @@ Escribe tus conclusiones finales.
         responseType: "blob",
       });
 
-      const contentType = String(res.headers["content-type"] || "");
+      const contentType = String(res.headers["content-type"] || res.headers["Content-Type"] || (res.data as Blob)?.type || "");
       if (contentType.includes("application/json")) {
         const text = await (res.data as Blob).text();
         const json = JSON.parse(text);

@@ -157,9 +157,9 @@ import { useToast } from 'vue-toastification'
 import { Save } from 'lucide-vue-next'
 import useDocumentStore from '@/store/document'
 import * as pdfjsLib from 'pdfjs-dist'
-import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl
+pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker()
 
 const route = useRoute()
 const toast = useToast()
