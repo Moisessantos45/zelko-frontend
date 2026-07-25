@@ -67,7 +67,7 @@ const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/login",
+      redirect: "/",
     },
   ],
   scrollBehavior(_, __, savedPosition) {
