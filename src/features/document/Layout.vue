@@ -60,7 +60,7 @@ const userInitials = computed(() => {
 const logout = async () => {
   await authStore.logout();
   if (!alertMessage.value.error) {
-    router.replace('/login');
+    router.replace({ name: 'login' });
   }
 };
 
