@@ -94,7 +94,6 @@ const userInitials = computed(() => {
 });
 
 const handleClick = async () => {
-  console.log('userData.value.id', userData.value);
   const result = await (userData.value.id ? userStore.updateUser() : userStore.addUser());
   if (result.isSuccess) {
     toast.success("Información del usuario actualizada correctamente.");
