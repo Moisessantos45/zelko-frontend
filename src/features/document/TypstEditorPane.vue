@@ -30,7 +30,7 @@ import useDocumentStore from '@/store/document'
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, highlightSpecialChars } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
-import { typst_lezer } from 'codemirror-lang-typst/lezer'
+import { typstLanguage } from './typstLanguage'
 import { tags } from '@lezer/highlight'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 
@@ -150,7 +150,7 @@ onMounted(() => {
         highlightSpecialChars(),
         history(),
         keymap.of([...defaultKeymap, ...historyKeymap]),
-        typst_lezer(),
+        typstLanguage,
         zelkoTheme,
         syntaxHighlighting(zelkoHighlight),
         EditorView.updateListener.of((update) => {

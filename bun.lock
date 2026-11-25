@@ -13,7 +13,6 @@
         "axios": "^1.21.1",
         "codemirror": "^6.0.2",
         "codemirror-lang-latex": "^0.6.2",
-        "codemirror-lang-typst": "^0.6.0",
         "dompurify": "^3.5.0",
         "lucide-vue-next": "^1.0.0",
         "marked": "^18.3.0",
@@ -316,8 +315,6 @@
     "codemirror": ["codemirror@6.0.2", "", { "dependencies": { "@codemirror/autocomplete": "^6.0.0", "@codemirror/commands": "^6.0.0", "@codemirror/language": "^6.0.0", "@codemirror/lint": "^6.0.0", "@codemirror/search": "^6.0.0", "@codemirror/state": "^6.0.0", "@codemirror/view": "^6.0.0" } }, "sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw=="],
 
     "codemirror-lang-latex": ["codemirror-lang-latex@0.6.2", "", { "peerDependencies": { "@codemirror/autocomplete": "^6.20.1", "@codemirror/commands": "^6.10.3", "@codemirror/language": "^6.12.3", "@codemirror/lint": "^6.9.5", "@codemirror/search": "^6.6.0", "@codemirror/state": "^6.6.0", "@codemirror/view": "^6.41.0", "@lezer/common": "^1.5.2", "@lezer/generator": "^1.8.0", "@lezer/highlight": "^1.2.3", "@lezer/lr": "^1.4.8" } }, "sha512-QhxVU5CfQaFtyLPePw5E11IyjLF3PxB9II9VnMyXOlmbD6EyBclHPzqdRKdF1a5+K5bwimTpPB1Y7WDEflPEOw=="],
-
-    "codemirror-lang-typst": ["codemirror-lang-typst@0.6.0", "", { "dependencies": { "@codemirror/autocomplete": "^6.20.3", "@codemirror/language": "^6.11.2", "@codemirror/lint": "^6.9.7", "@codemirror/state": "^6.5.2", "@codemirror/view": "^6.38.1", "@lezer/common": "^1.2.3", "@lezer/highlight": "^1.2.1" } }, "sha512-arxPg4g2tc+VeDErihW0+PuYQ5Hl7sAQ1FgqF/Hbta+0pRF6YER6L+S+QUFE56ev9azfxWYqMqHOuPQmPjEgSQ=="],
 
     "combined-stream": ["combined-stream@1.0.8", "", { "dependencies": { "delayed-stream": "~1.0.0" } }, "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg=="],
 
