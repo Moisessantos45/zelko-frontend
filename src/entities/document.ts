@@ -1,3 +1,5 @@
+type DocumentType = 'latex' | 'typst';
+
 interface DocumentListItem {
   id: number;
   slug: string;
@@ -6,6 +8,7 @@ interface DocumentListItem {
   createdAt: string;
   updatedAt: string;
   visibilityId: number;
+  typeDocument: string;
 }
 
 interface DocumentResponse {
@@ -17,9 +20,10 @@ interface DocumentResponse {
   createdAt: string;
   updatedAt: string;
   visibilityId?: number;
+  typeDocument: string;
 }
 
-const initialDocumentResponse={
+const initialDocumentResponse = {
   id: 0,
   slug: "",
   title: "",
@@ -28,7 +32,8 @@ const initialDocumentResponse={
   createdAt: "",
   updatedAt: "",
   visibilityId: undefined,
+  typeDocument: "latex"
 }
 
-export type { DocumentListItem, DocumentResponse };
+export type { DocumentListItem, DocumentResponse, DocumentType };
 export { initialDocumentResponse };

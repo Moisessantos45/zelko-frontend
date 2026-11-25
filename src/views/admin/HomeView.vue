@@ -27,7 +27,7 @@
       </div>
       <div>
         <p class="text-sm font-semibold text-(--color-ink)">Sin documentos</p>
-        <p class="text-xs text-(--color-ink-secondary) mt-1">Crea tu primer documento LaTeX</p>
+        <p class="text-xs text-(--color-ink-secondary) mt-1">Crea tu primer documento LaTeX o Typst</p>
       </div>
       <button @click="showModal = true"
         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-(--color-primary) hover:bg-(--color-primary-hover) transition-colors cursor-pointer border-none">
@@ -39,16 +39,25 @@
     <div v-else class="flex flex-col gap-3">
       <div v-for="doc in documentList" :key="doc.id"
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 bg-(--color-surface) border border-(--color-border) rounded-xl hover:bg-(--color-surface-alt) hover:border-(--color-primary)/30 transition-all group">
-        <RouterLink :to="{ name: 'document', params: { slug: doc.slug } }"
+        <RouterLink :to="doc.typeDocument === 'typst' ? { name: 'document-typst', params: { slug: doc.slug } } : { name: 'document', params: { slug: doc.slug } }"
           class="flex items-center gap-3 min-w-0 flex-1 no-underline">
-          <div class="w-9 h-9 rounded-lg bg-(--color-primary)/10 flex items-center justify-center shrink-0">
-            <FileText :size="16" class="text-(--color-primary)" />
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+            :class="doc.typeDocument === 'typst' ? 'bg-amber-500/10 text-amber-600' : 'bg-(--color-primary)/10 text-(--color-primary)'">
+            <FileText :size="16" />
           </div>
           <div class="min-w-0">
-            <p
-              class="text-sm font-semibold text-(--color-ink) truncate group-hover:text-(--color-primary) transition-colors">
-              {{ doc.title }}
-            </p>
+            <div class="flex items-center gap-2">
+              <p
+                class="text-sm font-semibold text-(--color-ink) truncate group-hover:text-(--color-primary) transition-colors">
+                {{ doc.title }}
+              </p>
+              <span
+                class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded shrink-0"
+                :class="doc.typeDocument === 'typst' ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-blue-100 text-blue-700 border border-blue-200'"
+              >
+                {{ doc.typeDocument === 'typst' ? 'Typst' : 'LaTeX' }}
+              </span>
+            </div>
             <p class="text-xs text-(--color-ink-secondary) mt-0.5">{{ doc.updatedAt }}</p>
           </div>
         </RouterLink>
@@ -65,7 +74,7 @@
               :icon="Eye" @change="(val) => changeVisibility(doc.slug, val)" />
           </div>
 
-          <RouterLink :to="{ name: 'document', params: { slug: doc.slug } }"
+          <RouterLink :to="doc.typeDocument === 'typst' ? { name: 'document-typst', params: { slug: doc.slug } } : { name: 'document', params: { slug: doc.slug } }"
             class="p-1 text-(--color-ink-secondary) hover:text-(--color-ink) transition-colors">
             <ChevronRight :size="16" />
           </RouterLink>
@@ -75,9 +84,17 @@
 
     <BaseModal :hidden="showModal" title="Nuevo documento" confirm-label="Crear"
       :disabled="!newTitle.trim() || documentLoading" @cancel="closeModal" @confirm="handleCreate">
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col gap-3">
         <InputField label="Título" id="newTitle" v-model="newTitle" placeholder="Ej. Tesis de grado"
           @keyup.enter="handleCreate" />
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-semibold text-(--color-ink)">Tipo de documento</label>
+          <DynamicDropdown
+            v-model="selectedTypeDocument"
+            :options="typeDocumentOptions"
+            defaultLabel="Selecciona formato"
+          />
+        </div>
       </div>
     </BaseModal>
 
@@ -96,7 +113,7 @@ import BaseModal from '@/components/molecules/BaseModal.vue';
 import PageNavigator from "@/components/molecules/PageNavigator.vue";
 import InputField from "@/components/molecules/InputField.vue";
 import DynamicDropdown from "@/components/atoms/DynamicDropdown.vue";
-import useDocumentStore from '@/store/document';
+import useDocumentStore, { latexDefaultTemplate, typstDefaultTemplate } from '@/store/document';
 
 const router = useRouter();
 const toast = useToast();
@@ -105,7 +122,13 @@ const { documentList, visibilityDropdownOptions, visibilityList, documentLoading
 
 const showModal = ref(false);
 const newTitle = ref('');
+const selectedTypeDocument = ref<string>('latex');
 const copiedSlug = ref<string | null>(null);
+
+const typeDocumentOptions = [
+  { id: 'latex', label: 'LaTeX' },
+  { id: 'typst', label: 'Typst' },
+];
 
 const visibilityOptions = computed(() => {
   if (visibilityList.value && visibilityList.value.length > 0) {
@@ -156,15 +179,22 @@ const changePage = (newPage: number) => {
 const closeModal = () => {
   showModal.value = false;
   newTitle.value = '';
+  selectedTypeDocument.value = 'latex';
 };
 
 const handleCreate = async () => {
   if (!newTitle.value.trim()) return;
-  const result = await documentStore.createDocument(newTitle.value.trim(), '');
+  const docType = selectedTypeDocument.value || 'latex';
+  const defaultContent = docType === 'typst' ? typstDefaultTemplate : latexDefaultTemplate;
+  const result = await documentStore.createDocument(newTitle.value.trim(), defaultContent, docType);
   if (result.isSuccess) {
     toast.success('Documento creado correctamente.');
     closeModal();
-    router.push({ name: 'document', params: { slug: documentForm.value.slug } });
+    if (docType === 'typst') {
+      router.push({ name: 'document-typst', params: { slug: documentForm.value.slug } });
+    } else {
+      router.push({ name: 'document', params: { slug: documentForm.value.slug } });
+    }
   } else {
     toast.error(result.getError?.msg || 'Error al crear el documento.');
   }

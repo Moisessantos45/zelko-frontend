@@ -10,6 +10,7 @@ const mapperDocumentListItem = (
     title: getString(data.title),
     url: getString(data.url),
     visibilityId: getNumber(data.visibility_id),
+    typeDocument: getString(data.type_document) || getString(data.typeDocument) || "latex",
     createdAt: getDateToString(data.created_at),
     updatedAt: getDateToString(data.updated_at),
   };
@@ -27,6 +28,7 @@ const mapperDocumentResponse = (
     createdAt: getDateToString(data.created_at),
     updatedAt: getDateToString(data.updated_at),
     visibilityId: getNumber(data.visibility_id),
+    typeDocument: getString(data.type_document) || getString(data.typeDocument) || "latex",
   };
 };
 

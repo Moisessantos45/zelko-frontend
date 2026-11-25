@@ -25,8 +25,7 @@ export interface CompileResult {
   [key: string]: unknown;
 }
 
-export const useDocumentStore = defineStore("document", () => {
-  const source = ref<string>(`\\documentclass[12pt]{article}
+export const latexDefaultTemplate = `\\documentclass[12pt]{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
 \\usepackage{graphicx}
@@ -69,7 +68,53 @@ Los resultados de tu investigación van aquí.
 \\section{Conclusiones}
 Escribe tus conclusiones finales.
 
-\\end{document}`);
+\\end{document}`;
+
+export const typstDefaultTemplate = `#set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
+#set text(font: "Liberation Serif", size: 11pt, lang: "es")
+#set par(justify: true)
+
+#align(center)[
+  #text(2em, weight: "bold")[Mi Documento Typst] \\
+  #v(1em)
+  #text(1.1em)[Usuario] \\
+  #datetime.today().display("[day]/[month]/[year]")
+]
+
+#v(2em)
+
+#block(
+  fill: rgb("f4f4f5"),
+  inset: 12pt,
+  radius: 6pt,
+  width: 100%,
+)[
+  #text(weight: "bold")[Resumen] \\
+  Este es el resumen del documento Typst. Aquí puedes describir brevemente el contenido principal de tu trabajo.
+]
+
+= Introducción
+Escribe aquí la introducción de tu documento. Puedes usar *negrita*, _cursiva_ y mucho más.
+
+= Metodología
+== Primer Apartado
+El contenido de tu sección va aquí. Incluye ecuaciones matemáticas como:
+
+$ E = m c^2 $
+
+== Segundo Apartado
+- Primer elemento
+- Segundo elemento
+- Tercer elemento
+
+= Resultados
+Los resultados de tu investigación van aquí.
+
+= Conclusiones
+Escribe tus conclusiones finales.`;
+
+export const useDocumentStore = defineStore("document", () => {
+  const source = ref<string>(latexDefaultTemplate);
 
   const { exec, loading } = useApiResult();
   const paginated = reactive<Pagination>(
@@ -167,12 +212,18 @@ Escribe tus conclusiones finales.
     });
   };
 
-  const createDocument = async (title: string, content: string) => {
+  const createDocument = async (
+    title: string,
+    content: string,
+    typeDocument: string = "latex",
+  ) => {
     return await exec(
       () =>
         apiAuth.post("/documents", {
           title: title,
           content: content,
+          type_document: typeDocument,
+          typeDocument: typeDocument,
         }),
       {
         mapper(res) {
@@ -257,7 +308,12 @@ Escribe tus conclusiones finales.
         responseType: "blob",
       });
 
-      const contentType = String(res.headers["content-type"] || res.headers["Content-Type"] || (res.data as Blob)?.type || "");
+      const contentType = String(
+        res.headers["content-type"] ||
+          res.headers["Content-Type"] ||
+          (res.data as Blob)?.type ||
+          "",
+      );
       if (contentType.includes("application/json")) {
         const text = await (res.data as Blob).text();
         const json = JSON.parse(text);
@@ -283,7 +339,7 @@ Escribe tus conclusiones finales.
     return null;
   };
 
-  const compileLatex = async (
+  const compileDocument = async (
     sourceText?: string,
     slugParam?: string,
   ): Promise<CompileResult> => {
@@ -392,6 +448,9 @@ Escribe tus conclusiones finales.
     }
   };
 
+  const compileLatex = compileDocument;
+  const compileTypst = compileDocument;
+
   return {
     documentLoading: loading,
     source,
@@ -413,7 +472,9 @@ Escribe tus conclusiones finales.
     updateDocument,
     updateDocumentVisibility,
     previewDocument,
+    compileDocument,
     compileLatex,
+    compileTypst,
   };
 });
 

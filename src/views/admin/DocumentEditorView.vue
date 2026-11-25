@@ -30,7 +30,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import DocumentEditorPane from '@/features/document/DocumentEditorPane.vue';
 import DocumentPreviewPane from '@/features/document/DocumentPreviewPane.vue';
-import useDocumentStore from '@/store/document';
+import useDocumentStore, { latexDefaultTemplate } from '@/store/document';
 
 const route = useRoute();
 const router = useRouter();
@@ -55,8 +55,16 @@ const getData = async () => {
     return;
   }
 
+  if (documentStore.documentDetails.typeDocument === 'typst') {
+    router.replace({ name: 'document-typst', params: { slug: slug.value } });
+    return;
+  }
+
   if (documentStore.documentDetails.content.trim() !== '') {
     documentStore.source = documentStore.documentDetails.content;
+    await documentStore.compileLatex(undefined, slug.value);
+  } else {
+    documentStore.source = latexDefaultTemplate;
     await documentStore.compileLatex(undefined, slug.value);
   }
 };

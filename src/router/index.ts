@@ -28,6 +28,13 @@ const router = createRouter({
           meta: { requiresAuth: true, title: "Editor de Documento" },
         },
         {
+          path: "document/typst/:slug",
+          alias: ["typst/:slug"],
+          name: "document-typst",
+          component: () => import("../views/admin/TypstEditorView.vue"),
+          meta: { requiresAuth: true, title: "Editor Typst" },
+        },
+        {
           path: "profile",
           name: "profile",
           component: () => import("../views/admin/ProfileView.vue"),
