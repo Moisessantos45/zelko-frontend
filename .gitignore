@@ -27,3 +27,5 @@ desing/
 *.njsproj
 *.sln
 *.sw?
+
+ui/

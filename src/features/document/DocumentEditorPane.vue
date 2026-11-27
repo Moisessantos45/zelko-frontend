@@ -1,27 +1,45 @@
 <template>
-  <section class="flex flex-col flex-1 overflow-hidden min-w-0">
-    <div
-      class="flex items-center justify-between h-9 px-3 bg-(--color-surface) border-b border-(--color-border) gap-2 shrink-0">
-      <div class="flex items-center gap-2 min-w-0">
+  <section class="flex flex-col flex-1 overflow-hidden min-w-0 bg-white">
+    <div class="px-4 sm:px-6 pt-3 sm:pt-5 pb-3 flex flex-col gap-2.5 sm:gap-3 shrink-0 border-b border-gray-100">
+      <div class="flex items-center justify-between">
+        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-[#0f4b3e] text-white shadow-2xs">
+          LaTeX
+        </span>
+
+        <span class="text-xs text-gray-400 font-mono">{{ lineCount }} líneas</span>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-gray-500 pt-0.5 sm:pt-1">
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-400">Asignado a:</span>
+          <span class="font-medium text-gray-800">Usuario</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border"
+            :class="documentStore.compiledOk ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80' : 'bg-red-50 text-red-700 border-red-200/80'">
+            <span class="w-1.5 h-1.5 rounded-full" :class="documentStore.compiledOk ? 'bg-emerald-600' : 'bg-red-600'"></span>
+            {{ documentStore.compiledOk ? 'Compilado' : 'Error' }}
+          </span>
+        </div>
+      </div>
+
+      <div>
         <input
           v-model="documentStore.documentDetails.title"
           type="text"
-          placeholder="Sin título"
-          class="text-xs font-semibold text-(--color-ink) bg-(--color-surface-alt) border border-(--color-border) rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-(--color-primary) focus:border-(--color-primary) transition-colors placeholder:text-(--color-ink-muted) min-w-0 max-w-xs sm:max-w-sm truncate"
+          placeholder="Nombre del documento"
+          class="text-lg sm:text-xl font-bold text-gray-900 border-none outline-none focus:ring-0 bg-transparent w-full p-0 placeholder:text-gray-300"
         />
-        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
-          :class="documentStore.compiledOk ? 'bg-(--color-success-subtle) text-(--color-success)' : 'bg-(--color-danger-subtle) text-(--color-danger)'">
-          {{ documentStore.compiledOk ? 'Compilado' : 'Error' }}
-        </span>
       </div>
-      <span class="text-xs text-(--color-ink-muted) shrink-0">{{ lineCount }} líneas</span>
     </div>
 
     <div ref="editorEl" class="flex-1 overflow-hidden" />
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import useDocumentStore from '@/store/document'
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, highlightSpecialChars } from '@codemirror/view'
@@ -41,11 +59,11 @@ const zelkoTheme = EditorView.theme({
     fontFamily: "'JetBrains Mono', monospace",
     fontSize: '13px',
     lineHeight: '1.6',
-    caretColor: '#15803d',
-    padding: '12px 0',
+    caretColor: '#059669',
+    padding: '16px 20px',
   },
   '&.cm-focused .cm-cursor': {
-    borderLeftColor: '#15803d',
+    borderLeftColor: '#059669',
   },
   '.cm-activeLine': {
     backgroundColor: '#f0fdf4',
@@ -54,19 +72,19 @@ const zelkoTheme = EditorView.theme({
     backgroundColor: '#dcfce7',
   },
   '.cm-gutters': {
-    backgroundColor: '#fafafa',
-    color: '#a1a1aa',
-    borderRight: '1px solid #e4e4e7',
+    backgroundColor: '#ffffff',
+    color: '#94a3b8',
+    borderRight: '1px solid #f1f5f9',
     fontFamily: "'JetBrains Mono', monospace",
     fontSize: '12px',
   },
   '.cm-activeLineGutter': {
     backgroundColor: '#f0fdf4',
-    color: '#15803d',
+    color: '#059669',
   },
   '.cm-lineNumbers .cm-gutterElement': {
-    padding: '0 8px 0 12px',
-    minWidth: '3em',
+    padding: '0 10px 0 16px',
+    minWidth: '3.5em',
   },
   '.cm-matchingBracket': {
     backgroundColor: '#dcfce7',
@@ -79,60 +97,50 @@ const zelkoTheme = EditorView.theme({
   '.cm-searchMatch.cm-searchMatch-selected': {
     backgroundColor: '#fde68a',
   },
-  '.cm-foldPlaceholder': {
-    backgroundColor: '#f4f4f5',
-    color: '#52525b',
-    border: '1px solid #e4e4e7',
-  },
-  '.cm-tooltip': {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e4e4e7',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.07)',
-  },
-  '.cm-tooltip-autocomplete ul li[aria-selected]': {
-    backgroundColor: '#f0fdf4',
-    color: '#09090b',
-  },
   '.cm-scroller': {
     overflow: 'auto',
   },
 })
 
 const zelkoHighlight = HighlightStyle.define([
-  { tag: tags.keyword, color: '#15803d', fontWeight: '600' },
-  { tag: tags.controlKeyword, color: '#15803d', fontWeight: '600' },
-  { tag: tags.operator, color: '#52525b' },
-  { tag: tags.special(tags.variableName), color: '#15803d' },
+  { tag: tags.keyword, color: '#059669', fontWeight: '600' },
+  { tag: tags.controlKeyword, color: '#059669', fontWeight: '600' },
+  { tag: tags.operator, color: '#64748b' },
+  { tag: tags.special(tags.variableName), color: '#059669' },
   { tag: tags.typeName, color: '#ca8a04' },
   { tag: tags.atom, color: '#ca8a04' },
   { tag: tags.number, color: '#ca8a04' },
-  { tag: tags.definition(tags.variableName), color: '#2563eb' },
-  { tag: tags.string, color: '#166534' },
-  { tag: tags.special(tags.string), color: '#166534' },
-  { tag: tags.comment, color: '#a1a1aa', fontStyle: 'italic' },
-  { tag: tags.variableName, color: '#09090b' },
-  { tag: tags.tagName, color: '#2563eb' },
-  { tag: tags.bracket, color: '#52525b' },
-  { tag: tags.meta, color: '#a1a1aa' },
-  { tag: tags.link, color: '#2563eb', textDecoration: 'underline' },
-  { tag: tags.heading, color: '#15803d', fontWeight: '700' },
+  { tag: tags.definition(tags.variableName), color: '#0284c7' },
+  { tag: tags.string, color: '#047857' },
+  { tag: tags.special(tags.string), color: '#047857' },
+  { tag: tags.comment, color: '#94a3b8', fontStyle: 'italic' },
+  { tag: tags.variableName, color: '#0f172a' },
+  { tag: tags.tagName, color: '#0284c7' },
+  { tag: tags.bracket, color: '#64748b' },
+  { tag: tags.heading, color: '#059669', fontWeight: '700' },
   { tag: tags.emphasis, fontStyle: 'italic' },
   { tag: tags.strong, fontWeight: '700' },
-  { tag: tags.strikethrough, textDecoration: 'line-through' },
-  { tag: tags.bool, color: '#ca8a04' },
-  { tag: tags.null, color: '#a1a1aa' },
-  { tag: tags.className, color: '#ca8a04' },
-  { tag: tags.propertyName, color: '#2563eb' },
-  { tag: tags.function(tags.variableName), color: '#2563eb' },
-  { tag: tags.namespace, color: '#ca8a04' },
 ])
 
 const documentStore = useDocumentStore()
-const editorEl = ref(null)
-const editorView = ref(null)
+const editorEl = ref<HTMLElement | null>(null)
+const editorView = ref<EditorView | null>(null)
 const syncingFromEditor = ref(false)
 
 const lineCount = computed(() => documentStore.source.split('\n').length)
+
+const insertText = (before: string, after: string = '') => {
+  if (!editorView.value) return
+  const view = editorView.value
+  const { from, to } = view.state.selection.main
+  const selectedText = view.state.sliceDoc(from, to)
+  const replacement = before + (selectedText || '') + after
+  view.dispatch({
+    changes: { from, to, insert: replacement },
+    selection: { anchor: from + before.length + (selectedText ? selectedText.length : 0) },
+  })
+  view.focus()
+}
 
 onMounted(() => {
   if (!editorEl.value) return
@@ -175,6 +183,10 @@ watch(() => documentStore.source, (newVal) => {
 
 onUnmounted(() => {
   editorView.value?.destroy()
+})
+
+defineExpose({
+  insertText,
 })
 </script>
 

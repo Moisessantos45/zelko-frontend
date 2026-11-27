@@ -134,6 +134,7 @@ export const useDocumentStore = defineStore("document", () => {
   const errorLog = ref<string>("");
   const compiledOk = ref<boolean>(true);
   const isCompiling = ref<boolean>(false);
+  const showCreateModal = ref<boolean>(false);
 
   const setSource = (newSource: string) => {
     source.value = newSource;
@@ -458,6 +459,7 @@ export const useDocumentStore = defineStore("document", () => {
     errorLog,
     compiledOk,
     isCompiling,
+    showCreateModal,
     documentList,
     documentDetails,
     paginated,

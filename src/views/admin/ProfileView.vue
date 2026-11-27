@@ -31,7 +31,7 @@
         <p class="text-xs font-semibold text-(--color-ink-secondary) uppercase tracking-wider">
           Información personal
         </p>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField label="Nombre" id="firstName" v-model="userData.firstName" placeholder="Nombre" />
           <InputField label="Apellido" id="lastName" v-model="userData.lastName" placeholder="Apellido" />
         </div>
