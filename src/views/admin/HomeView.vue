@@ -87,12 +87,6 @@
           <table class="w-full text-left border-collapse min-w-[620px]">
             <thead>
               <tr class="border-b border-gray-100 text-[11px] font-semibold text-gray-400 tracking-wider">
-                <th class="py-3 px-4 w-10 text-center">
-                  <input
-                    type="checkbox"
-                    class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                  />
-                </th>
                 <th class="py-3 px-4 font-semibold">Nombre</th>
                 <th class="py-3 px-4 font-semibold">Visibilidad</th>
                 <th class="py-3 px-4 font-semibold">Tipo</th>
@@ -105,13 +99,6 @@
                 v-for="doc in filteredDocuments"
                 :key="doc.id"
                 class="hover:bg-gray-50/70 transition-colors group">
-                <td class="py-3.5 px-4 text-center">
-                  <input
-                    type="checkbox"
-                    class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                  />
-                </td>
-
                 <td class="py-3.5 px-4">
                   <RouterLink
                     :to="doc.typeDocument === 'typst' ? { name: 'document-typst', params: { slug: doc.slug } } : { name: 'document', params: { slug: doc.slug } }"
