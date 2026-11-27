@@ -1,74 +1,101 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-(--color-bg) font-sans" itemscope itemtype="https://schema.org/WebPage">
+  <div class="min-h-screen flex flex-col bg-[#f1f3f5] font-sans" itemscope itemtype="https://schema.org/WebPage">
     <meta itemprop="name" content="Crear Cuenta - Zelko" />
-    <meta itemprop="description" content="Regístrate en Zelko para gestionar tus cotizaciones y clientes." />
+    <meta itemprop="description" content="Regístrate en Zelko para gestionar y editar tus documentos LaTeX y Typst." />
     <TheHeader />
 
-    <main class="flex-1 flex items-center justify-center px-5 py-12">
-      <div class="w-full max-w-lg bg-(--color-surface) rounded-xl shadow-(--shadow-card) border border-(--color-border) overflow-hidden relative">
-        <div class="px-6 pt-10 pb-6 text-center sm:px-8 border-b border-(--color-border)">
-          <div class="w-12 h-12 bg-(--color-primary-subtle) text-(--color-primary) rounded-full flex items-center justify-center mx-auto mb-6 border border-(--color-primary)/20">
+    <main class="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
+      <div class="w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-200/90 overflow-hidden flex flex-col">
+        <div class="px-6 pt-9 pb-6 text-center sm:px-8 border-b border-gray-100">
+          <div class="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
             <UserPlus2 class="w-6 h-6" />
           </div>
-          <h1 class="font-bold text-xl text-(--color-ink) mb-1.5 tracking-tight">Crear Cuenta</h1>
-          <p class="text-sm text-(--color-ink-secondary) max-w-sm mx-auto">
-            Crea tu cuenta en Zelko completando el formulario.
+          <h1 class="font-bold text-2xl text-gray-900 mb-1 tracking-tight">Crear Cuenta</h1>
+          <p class="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto">
+            Únete a Zelko y comienza a editar tus documentos en LaTeX y Typst.
           </p>
         </div>
 
         <div class="px-6 py-7 sm:px-8">
           <form @submit.prevent="handleSubmit" class="space-y-4">
-            <InputField label="Ingresa tu correo electrónico" id="email" required type="email"
-              inputmode="email" v-model="email" placeholder="admin@cotizaerp.com" />
+            <InputField
+              label="Correo electrónico"
+              id="email"
+              required
+              type="email"
+              inputmode="email"
+              v-model="email"
+              placeholder="tu@correo.com"
+            />
 
-            <InputField label="Ingresa tu contraseña" id="password" required type="password"
-              inputmode="text" v-model="password" placeholder="••••••••" />
+            <InputField
+              label="Contraseña"
+              id="password"
+              required
+              type="password"
+              inputmode="text"
+              v-model="password"
+              placeholder="••••••••"
+            />
 
-            <InputField label="Confirmar Contraseña" id="confirmPassword" required type="password"
-              inputmode="text" v-model="confirmPassword" placeholder="••••••••" />
+            <InputField
+              label="Confirmar Contraseña"
+              id="confirmPassword"
+              required
+              type="password"
+              inputmode="text"
+              v-model="confirmPassword"
+              placeholder="••••••••"
+            />
 
-            <div class="pt-4 border-t border-(--color-border) flex flex-col gap-4">
+            <div class="pt-2 flex flex-col gap-4">
               <AppAlert v-if="alertMessage.msg" :msg="alertMessage.msg" :error="alertMessage.error" />
 
-              <div class="bg-(--color-surface-alt) rounded-lg border border-(--color-border) p-4 space-y-3">
-                <p class="text-xs font-semibold text-(--color-ink) uppercase tracking-wider">Requisitos de seguridad</p>
-                <ul class="space-y-2">
-                  <li v-for="req in requirements" :key="req.label"
-                    class="flex items-center gap-2 text-sm text-(--color-ink-secondary) font-medium">
-                    <Check class="h-4 w-4 text-(--color-primary) shrink-0" v-if="req.met" />
-                    <span class="w-1.5 h-1.5 rounded-full bg-(--color-ink-muted) shrink-0 ml-1.5 mr-1" v-else></span>
+              <div class="bg-gray-50/80 rounded-xl border border-gray-100 p-4 space-y-2.5">
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Requisitos de seguridad</p>
+                <ul class="space-y-1.5 list-none p-0 m-0">
+                  <li
+                    v-for="req in requirements"
+                    :key="req.label"
+                    class="flex items-center gap-2 text-xs font-medium"
+                    :class="req.met ? 'text-emerald-700 font-semibold' : 'text-gray-500'">
+                    <Check class="h-3.5 w-3.5 text-emerald-600 shrink-0" v-if="req.met" />
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0 ml-1 mr-1" v-else></span>
                     {{ req.label }}
                   </li>
                 </ul>
               </div>
 
-              <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2">
-                <RouterLink to="/"
-                  class="flex justify-center items-center py-2.5 px-4 border border-(--color-border) rounded-lg text-sm font-semibold text-(--color-ink-secondary) bg-(--color-surface) hover:bg-(--color-surface-alt) transition-colors cursor-pointer">
+              <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-1">
+                <RouterLink
+                  to="/"
+                  class="inline-flex justify-center items-center py-2.5 px-4 border border-gray-200 rounded-xl text-xs sm:text-sm font-semibold text-gray-600 bg-white hover:bg-gray-50 transition-colors no-underline">
                   Cancelar
                 </RouterLink>
-                <button type="submit" :disabled="loading" :class="[
-                  'flex justify-center items-center py-2.5 px-6 rounded-lg text-sm font-semibold transition-colors cursor-pointer',
-                  !loading ? 'bg-(--color-primary) hover:bg-(--color-primary-hover) text-white' : 'opacity-70 bg-(--color-primary) text-white cursor-not-allowed'
-                ]">
-                  Registrarse
+                <button
+                  type="submit"
+                  :disabled="loading"
+                  class="inline-flex justify-center items-center py-2.5 px-6 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs bg-[#059669] hover:bg-[#047857] text-white disabled:opacity-60 disabled:cursor-not-allowed border-none cursor-pointer">
+                  <span
+                    v-if="loading"
+                    class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  <span v-else>Crear Cuenta</span>
                 </button>
               </div>
             </div>
-
           </form>
         </div>
 
-        <div class="px-6 py-6 border-t border-(--color-border) bg-(--color-surface-alt) text-center sm:px-8">
-          <p class="text-sm text-(--color-ink-secondary)">
-            ¿Ya estás registrado en la plataforma?
-            <RouterLink to="/"
-              class="text-(--color-primary) font-semibold hover:text-(--color-primary-hover) hover:underline transition-colors ml-1">
+        <div class="px-6 py-5 border-t border-gray-100 bg-gray-50/70 text-center sm:px-8">
+          <p class="text-xs sm:text-sm text-gray-500">
+            ¿Ya tienes una cuenta registrada?
+            <RouterLink
+              to="/"
+              class="text-emerald-600 font-semibold hover:text-emerald-700 hover:underline transition-colors ml-1 no-underline">
               Inicia sesión aquí
             </RouterLink>
           </p>
         </div>
-
       </div>
     </main>
   </div>
